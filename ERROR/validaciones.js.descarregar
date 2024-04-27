@@ -1,0 +1,2158 @@
+/**
+ * Tecnicamente no valida, sino que verifica la informacion ingresada e informa
+ * atravez de un tooltip al usuario.
+ *
+ * @author mudrizar
+ */
+var $k = jQuery.noConflict();
+
+/**
+ * Agrega un listener a cada elemento que tenga la clase 'validate-field'
+ */
+function validateFields() {
+	validateAlphaNumeric();
+	validateAlpha()
+	validateEmail();
+	validateCash();
+	validateDocument();
+	validateNumeric();
+	validatePercentage();
+	//validateNumericMultiple();
+	addFunctionality('.validate-phone', 'keypress', checkPhoneNumber);
+	addFunctionality('.validate-phone', 'focusout',checkPhoneNumberLength);
+	addFunctionality('.validate-alphaNumOnly', 'keypress', alphaNumericConstraint);
+	addFunctionality('.validate-alphaNumCarry', 'keypress', alphaNumericConstraintCarry);
+	addFunctionalityListener('.accent-alphaNum','beforeinput',accentCarryNumericListener);
+  addFunctionality('.validate-alphaNumPuntoGuion', 'keypress', alphaNumericConstraintPuntoGuion);
+	addFunctionality('.validate-alphaCarry', 'keypress', alphaConstraintCarry);
+	addFunctionalityListener('.accent-alpha','beforeinput',accentCarryListener);
+	addFunctionality('.validate-alpha', 'keypress', alphaConstraint);
+	addFunctionality('.validate-characters', 'keypress', alphaCharacters);
+	addFunctionality('.validate-cedula', 'focusout', cedulaValidate);
+	addFunctionality('.validate-cedula', 'keypress', cedulaLenghtValidate);
+	addFunctionality('.validate-pasaporte', 'focusout', pasaporteValidate);
+	addFunctionality('.validate-cash-message', 'focusout', validateCashMessage);
+	addFunctionality('.validate-cash-message', 'keyup', validateCashMessage);
+	addFunctionality('.validate-minmax-cash-message', 'focusout', validateMinMaxCashMessage);
+	addFunctionality('.validate-length', 'focusout', validateLengthInput);
+	addFunctionality('.validate-obligatorio', 'focusout', validateObligatorio);
+	addFunctionality('.validate-obligatorio', 'change', validateObligatorio);
+	addFunctionalityKeyup('.validate-obligatorio',  validateObligatorio);
+
+	addFunctionality('.redval-obligatorio','change', redvalObligatorio);
+	addFunctionality('.redval-obligatorio','blur', redvalObligatorio);
+	addFunctionalityKeyup('.redval-obligatorio',  redvalObligatorio);
+	addFunctionality('.redval-length','change', redValLengthInput);
+	addFunctionality('.redval-length','blur', redValLengthInput);
+
+	validateRedMonto();
+	addFunctionality('.redval-monto-dinamic','change', redvalMontoDinamicField);
+	addFunctionality('.redval-monto-dinamic','blur', redvalMontoDinamicField);
+	addFunctionalityKeyup('.redval-monto-dinamic',  redvalMontoDinamicField);
+	addFunctionality('.redval-monto-entero','change', redvalMontoEnteroField);
+	addFunctionality('.redval-monto-entero','blur', redvalMontoEnteroField);
+	addFunctionalityKeyup('.redval-monto-entero',  redvalMontoEnteroField);
+	addFunctionality('.redval-numeric-dinamic','change', redvalNumericDinamicField);
+	addFunctionality('.redval-numeric-dinamic','blur', redvalNumericDinamicField);
+	addFunctionalityKeyup('.redval-numeric-dinamic',  redvalNumericDinamicField);
+	addFunctionality('.redval-numeric-dinamic', 'input', redvalCaracteresNumeric);
+	addFunctionality('.redval-alphabet-dinamic','change', redvalAlphanumericDinamicField);
+	addFunctionality('.redval-alphabet-dinamic','blur', redvalAlphanumericDinamicField);
+	addFunctionalityKeyup('.redval-alphabet-dinamic',  redvalAlphanumericDinamicField);
+	addFunctionality('.redval-alphabet-dinamic', 'input', redvalCaracteresAlphabet);
+	addFunctionality('.redval-alphanumeric-dinamic','change', redvalAlphanumericDinamicField);
+	addFunctionality('.redval-alphanumeric-dinamic','blur', redvalAlphanumericDinamicField);
+	addFunctionalityKeyup('.redval-alphanumeric-dinamic',  redvalAlphanumericDinamicField);
+	addFunctionality('.redval-alphanumeric-dinamic', 'input', redvalCaracteresAlphaNum);
+	addFunctionality('.redval-decimal-dinamic','change', redvalDecimalDinamicField);
+	addFunctionality('.redval-decimal-dinamic','blur', redvalDecimalDinamicField);
+	addFunctionalityKeyup('.redval-decimal-dinamic',  redvalDecimalDinamicField);
+	addFunctionality('.redval-decimal-dinamic', 'input', redvalCaracteresNumeric);
+
+	addFunctionality('.validate-obligatorioCondicional', 'focusout', validateObligatorioCondicional);
+	addFunctionality('.validate-obligatorioCondicional', 'change', validateObligatorioCondicional);
+	addFunctionalityKeyup('.validate-obligatorioCondicional',  validateObligatorioCondicional);
+
+	addFunctionality('.validate-numeric-multiple', 'focusout', checkMultiple);
+	addFunctionality('.validate-monto-cnt', 'focusout', validateMontoCNT);
+	addFunctionality('.validate-monto-claro', 'focusout', validateMontoClaro);
+	addFunctionality('.validate-monto-movistar', 'focusout', validateMontoMovistar);
+
+	addFunctionality('.validate-monto-pago-institucional', 'focusout', validateMontoInstitucional);
+	addFunctionality('.validate-code-bimo', 'input',validateNotSameCharacter);
+	addFunctionality('.validate-dactilar-bimo', 'input',validateDactilarCodeLenght);
+	addFunctionality('.validate-codelength-bimo', 'blur',validateNotSameCharacter);
+
+	//addFunctionality('.validate-monto-plazo', 'focusout', validateMontoPlazo);
+
+    addFunctionality('.validate-apellidos', 'focusout', apellidosValidate);
+	addFunctionality('.validate-apellidos', 'change', apellidosValidate);
+	addFunctionalityKeyup('.validate-apellidos',  apellidosValidate);
+	validatePassword();
+	addFunctionality('.validate-numeric-spaces', 'keypress', validateNumericSpaces);
+}
+
+
+
+//Para permitir copy paste con menu contextual
+$k(document).on('paste', function(event) {
+	       setTimeout(function() {
+	       $k(event.target).trigger("change");
+	        var newEvent;
+	       if(typeof(Event) === 'function') {
+	    	   newEvent = new Event('keyup');
+	    	}else{
+	    		newEvent = document.createEvent('Event');
+	    		newEvent.initEvent('keyup', true, true);
+
+	    	}
+	       window.dispatchEvent(newEvent);
+	    }, 100);
+
+});
+
+
+
+function addFunctionalityKeyup(selector, validatorFunction) {
+	var fields = $k(selector);
+	if (fields.length == 0) {
+		return;
+	}
+	jQuery.each(fields, function(index, field) {
+		var jqueryElement = $k(field);
+		jqueryElement.on("keyup", function(eventData) {
+			//var keycode = (window.event) ? event.keyCode : event.keyCode;
+			 var keycode = eventData.which || eventData.keyCode;
+	        if (keycode != 9){
+	        	validatorFunction(jqueryElement, eventData);
+	        }
+		});
+	});
+}
+
+
+
+function showError(input, msg) {
+	input.parent().find("em").html(msg);
+	input.parent().find("em").show()
+}
+
+function showRedError(input, msg) {
+	var parent = input.parent();
+	parent.addClass("ld-input-box--invalid");
+	var errElem = parent.parent().find(".ld-text-field-helper-line").find(".ld-text-field-helper-text");
+	errElem.html(msg);
+	errElem.addClass("ld-text-field-helper-text--validation-msg");
+	errElem.show();
+}
+
+function showMontoRedError(input, msg) {
+	input.parent().find("label.redMontoError").html(msg);
+	input.parent().find("label.redMontoError").show();
+	input.parent().find(".line").addClass("ld-border-error");
+	input.parent().find("label.redMontoInfo").hide();
+}
+
+function showCardRedError(element, msg) {
+	var parent = element.parent();
+	var errElem = parent.parent().find(".ld-text-field-helper-line").find(".ld-text-field-helper-text");
+	errElem.html(msg);
+	errElem.addClass("ld-text-field-helper-text--validation-msg");
+	errElem.show();
+}
+
+function removeError(input) {
+	clearError(input);
+}
+
+function removeRedError(input) {
+	var parent = input.parent();
+	parent.removeClass("ld-input-box--invalid");
+	var em = parent.parent().find(".ld-text-field-helper-line").find(".ld-text-field-helper-text");
+	em.removeClass("ld-text-field-helper-text--validation-msg");
+	em.hide();
+}
+
+function removeMontoRedError(input) {
+	input.parent().find(".line").removeClass("ld-border-error");
+	input.parent().find("label.redMontoError").hide();
+	input.parent().find("label.redMontoInfo").show();
+}
+
+function addErrorMessageTag(element) {
+    if (!element.parent().hasClass('input-group')) {
+        try{
+        	if($k(element).data('is-wrapped') === undefined) {
+        		element.wrap('<span  class="input-group"> </span>').data('is-wrapped', true).focus();
+        		var input = $k(element);
+        		input[0].selectionStart = input[0].selectionEnd = input.val().length;
+        	}
+
+        } catch (e) {     }
+    }
+    if (element.parent().find("em").length == 0) {
+        if (document.documentMode || /Edge/.test(navigator.userAgent)) {
+            if (element.is("input[type='text']") || element.is("input[type='number']") || element.is("textarea")|| element.is("input[type='password']")) {
+                element.after('<em class="error-message_ie"></em>');
+            } else {
+                element.after('<em class="error-message"></em>');
+            }
+        }else{
+            element.after('<em class="error-message"></em>');
+        }
+
+    }
+
+}
+
+function addRedErrorMessageTag(element) {
+	if (!element.parent().hasClass('ld-input-box')) {
+		try{
+			if($k(element).data('is-wrapped') === undefined) {
+				element.wrap('<div class="ld-input-box"> </div>').data('is-wrapped', true).focus();
+				var input = $k(element);
+				input[0].selectionStart = input[0].selectionEnd = input.val().length;
+			}
+		} catch (e) {     }
+	}
+	if (element.parent().parent().find(".ld-text-field-helper-line").length == 0) {
+		if (document.documentMode || /Edge/.test(navigator.userAgent)) {
+			if (element.is("input[type='text']") || element.is("input[type='number']") || element.is("textarea")|| element.is("input[type='password']")) {
+				element.parent().after('<div class="ld-text-field-helper-line"><div class="ld-text-field-helper-text"></div></div>');
+			} else {
+				element.parent().after('<div class="ld-text-field-helper-line"><div class="ld-text-field-helper-text"></div></div>');
+			}
+		}else{
+			element.parent().after('<div class="ld-text-field-helper-line"><div class="ld-text-field-helper-text"></div></div>');
+		}
+	}
+}
+
+function addMontoRedErrorMessageTag(element) {
+	if (!element.parent().hasClass('redMonto')) {
+		try{
+			if($k(element).data('is-wrapped') === undefined) {
+				element.wrap('<div class="redMonto"> </div>').data('is-wrapped', true).focus();
+				var input = $k(element);
+				input[0].selectionStart = input[0].selectionEnd = input.val().length;
+			}
+		} catch (e) {     }
+	}
+	if (element.parent().find("label.redMontoError").length == 0) {
+		if (document.documentMode || /Edge/.test(navigator.userAgent)) {
+			if (element.is("input[type='text']") || element.is("input[type='number']") || element.is("textarea")|| element.is("input[type='password']")) {
+				element.next().after('<label class="redMontoError ld-text-overline1 ld-text-error ld-mt-0.5"></label>');
+			} else {
+				element.next().after('<label class="redMontoError ld-text-overline1 ld-text-error ld-mt-0.5"></label>');
+			}
+		}else{
+			element.next().after('<label class="redMontoError ld-text-overline1 ld-text-error ld-mt-0.5"></label>');
+		}
+	}
+}
+
+function addCardRedErrorMessageTag(element) {
+	if (element.parent().parent().find(".ld-text-field-helper-line").length == 0) {
+		if (document.documentMode || /Edge/.test(navigator.userAgent)) {
+			if (element.is("input[type='text']") || element.is("input[type='number']") || element.is("textarea")|| element.is("input[type='password']")) {
+				element.parent().after('<div class="ld-text-field-helper-line"><div class="ld-text-field-helper-text"></div></div>');
+			} else {
+				element.parent().after('<div class="ld-text-field-helper-line"><div class="ld-text-field-helper-text"></div></div>');
+			}
+		}else{
+			element.parent().after('<div class="ld-text-field-helper-line"><div class="ld-text-field-helper-text"></div></div>');
+		}
+	}
+}
+
+function validateMontoInstitucional(element, eventData) {
+	var paymentConcept = element.attr('paymentConcept');
+	var value = parseFloat(element.val());
+	if (!value) {
+		return;
+	}
+	var min = $k(element).attr("data-min");
+    min = min == "" || !min ? 0.00 : min;
+    var max = $k(element).attr("data-max");
+    max = max == "" || !max ? 999999.99 : max;
+	var response = {};
+	if (paymentConcept == 'MayorQueValorCargado') {
+		if (value < max) {
+			response.error = true;
+			response.text = 'El valor debe ser mayor a ' + max + '.';
+			addErrorMessageTag(element);
+			showError(element, response.text);
+			return;
+		}
+	}
+	if (paymentConcept == 'MenorQueValorCargado') {
+		if (value > max) {
+			response.error = true;
+			response.text = 'El valor debe ser menor a ' + max + '.';
+			addErrorMessageTag(element);
+			showError(element, response.text);
+			return;
+		}
+	}
+	if (paymentConcept == 'Parcial') {
+		if (value > max || value < min) {
+			response.error = true;
+			response.text = 'El monto debe estar entre ' + element.attr("data-min") + ' y ' + element.attr("data-max") + '.';
+			addErrorMessageTag(element);
+			showError(element, response.text);
+			return;
+		}
+	}
+	removeError(element);
+}
+
+
+function validateNumericMultiple() {
+	var max = max == "" || !max ? 300.00 : max;
+	$k('.validate-numeric-multiple').autoNumeric({
+		aSep : '',
+		aDec : '.',
+		mDec : 2,
+		aPad : true,
+		vMax : max
+	});
+}
+
+function validateDocument() {
+	$k('.validate-document').alphanum({
+		disallow : '¿!¡?´',
+		allow : '-'
+	});
+}
+function validateNumeric() {
+	$k('.validate-numeric').numeric({
+		allowMinus : false,
+		allowThouSep : false,
+		allowDecSep : false,
+		allowLeadingSpaces : false
+	});
+}
+
+function validateAlpha() {
+	$k('.validate-alpha').alpha({
+		disallow : '¿!¡?´'
+	});
+}
+
+function validateAlphaNumeric() {
+	$k('.validate-alphaNumeric').alphanum({
+		disallow : '¿!¡?´'
+	});
+}
+
+function validateAlphaNumericV2(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z0-9]/);
+	$k('.validate-alphaNumeric').alphanum({
+		disallow : '¿!¡?´'
+	});
+}
+
+function validateEmail() {
+	addFunctionality('.validate-email', 'focusout', checkEmail);
+	addFunctionality('.redval-email', 'blur', checkRedEmail);
+}
+
+
+function validateCash() {
+	$k('.validate-cash').each(function() {
+		var max = $k(this).attr("data-max");
+		max = max == "" || !max ? 999999.99 : max;
+		$k(this).autoNumeric({
+			aSep : '',
+			aDec : '.',
+			mDec : 2,
+			vMax : max
+		});
+		$k(this).on("change paste keyup",function() {
+		     var min = $k(this).attr("data-min");
+		     min = min == "" || !min ? 0.00 : min;
+		     if(min > $k(this).val()){
+		        addErrorMessageTag($k(this));
+		        showError($k(this), "El monto debe ser mayor a "+min + '.');
+		        return;
+		      }
+		    removeError($k(this));
+		});
+	});
+}
+
+function validateCashMessage(element, eventData) {
+	var max = element.attr("data-max");
+	var min = element.attr("data-min");
+	max = max == "" || !max ? 999999.99 : max;
+	min = min == "" || !min ? 0.00 : min;
+	element.autoNumeric({
+		aSep : '',
+		aDec : '.',
+		aPad : true,
+		mDec : 2,
+		vMax : max,
+		vMin : min
+	});
+
+	var maxF = parseFloat(max);
+	var minF = parseFloat(min);
+	var response = {};
+	var value = parseFloat(element.val());
+	if (value > maxF || value < minF) {
+		response.error = true;
+		var msg = element.attr("validate-cash-message-error");
+		if (msg) {
+			response.text = msg;
+		} else {
+			response.text = 'El monto debe estar entre ' + element.attr("data-min") + ' y ' + element.attr("data-max") + '.';
+		}
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+	}
+	removeError(element);
+}
+
+function validateMinMaxCashMessage(element, eventData) {
+	var max = element.attr("data-max");
+	var min = element.attr("data-min");
+	max = max == "" || !max ? 999999.99 : max;
+	min = min == "" || !min ? 0.00 : min;
+	element.autoNumeric({
+		aSep : '',
+		aDec : '.',
+		aPad : true,
+		mDec : 2,
+		vMax : max
+	});
+	 var maxF = parseFloat(max);
+	 var minF = parseFloat(min);
+	var response = {};
+	var value = parseFloat(element.val());
+	if (value > maxF) {
+		response.error = true;
+		response.text = 'El valor a pagar no debe ser superior al saldo de contado.';
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+	} else if (value < minF){
+		response.error = true;
+		response.text = 'El valor ingresado no debe ser inferior al mínimo a pagar.';
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+	}
+	removeError(element);
+}
+
+function validatePercentage() {
+	$k('.validate-percentage').autoNumeric({
+		mDec : 0,
+		vMax : '100',
+		vMin : '0'
+	});
+}
+
+function validateRedMonto(){
+	$k(".redval-monto-dinamic").each(function() {
+		var ua = navigator.userAgent.toLowerCase();
+		var isAndroid = ua.indexOf("android") > -1;
+		var integerDigits = $k(this).attr("integer-digits") == "" || !$k(this).attr("integer-digits") ? 6 : $k(this).attr("integer-digits");
+		if(!isAndroid) {
+			$k(this).inputmask("numeric", {prefix: '$', regex: "[0-9.]*", pattern: "[0-9.]*", integerDigits: integerDigits,
+				refreshFromBuffer: true, placeholder: '0.00', numericInput: true, autoGroup: false, allowPlus: false, allowMinus:false});
+		}else{
+			SimpleMaskMoney.setMask(this, {prefix: '$', suffix: '', fixed: true, fractionDigits: 2, integerDigits: integerDigits,
+				decimalSeparator: '.', thousandsSeparator: '.', autoCompleteDecimal:false});
+		}
+	});
+	$k(".redval-monto-entero").each(function() {
+		var integerDigits = $k(this).attr("integer-digits") == "" || !$k(this).attr("integer-digits") ? 6 : $k(this).attr("integer-digits");
+		$k(this).inputmask("numeric", {prefix: '$', regex: "[0-9]", pattern: "[0-9]", integerDigits: integerDigits, digits: 0,
+			refreshFromBuffer: true, placeholder: '0', numericInput: false, autoGroup: false, allowPlus: false, allowMinus:false});
+	})
+}
+
+function addFunctionalityListener(selector,event,validatorFunction){
+	var fields = $k(selector);
+	if (fields.length == 0) {
+		return;
+	}
+	jQuery.each(fields, function(index, field) {
+		var jqueryElement = $k(field);
+		jqueryElement[0].addEventListener(event, function(eventData) {
+			validatorFunction(jqueryElement, eventData);
+		});
+	});
+}
+
+function addFunctionality(selector, event, validatorFunction) {
+	var fields = $k(selector);
+	if (fields.length == 0) {
+		return;
+	}
+	jQuery.each(fields, function(index, field) {
+		var jqueryElement = $k(field);
+		jqueryElement.on(event, function(eventData) {
+			validatorFunction(jqueryElement, eventData);
+		});
+	});
+}
+
+function addFunctionalityClick(selector, event, validatorFunction, idButtonValidate) {
+	var fields = $k(selector);
+	var button = $k(idButtonValidate);
+	if (fields.length == 0) {
+		return;
+	}
+	if (button.length == 0) {
+		return;
+	}
+
+	jQuery.each(fields, function(index, field) {
+		var jqueryElement = $k(field);
+		button.on(event, function(eventData) {
+			validatorFunction(jqueryElement, eventData);
+		});
+	});
+}
+
+function removeFunctionality(selector, event) {
+	var fields = $k(selector);
+	if (fields.length == 0) {
+		return;
+	}
+	jQuery.each(fields, function(index, field) {
+		var jqueryElement = $k(field);
+		jqueryElement.unbind(event);
+	});
+}
+
+/* blur events */
+function checkMultiple(element, eventData) {
+
+	//********************************************************
+    //Obtiene el attr cuenta, si es distinto de blanco o de indefinido valido
+    var idSelect = element.attr("cuenta");
+    if (!(idSelect==undefined || idSelect=="undefined"  || idSelect=="")){
+		var customerId = $k("#"+idSelect+" option:selected").val();
+		customerId = customerId.substring(customerId.indexOf("uriSFB=") + 7)
+		var uriSFB = customerId.substring(0, 4);
+		if(uriSFB != "MCE2")
+		{
+			if(uriSFB != "COR2"){
+				var monto = $k("#"+idSelect+" option:selected").attr("monto");
+				if(parseFloat(monto) < parseFloat(element.val())){
+					addErrorMessageTag(element);
+					showError(element, 'El monto a debitar supera el saldo disponible de su cuenta.');
+					return;
+				}
+			}
+		}
+    }
+    //********************************************************
+
+
+	var maxValue = parseFloat(element.attr("max-value"));
+	var minValue = parseFloat(element.attr("min-value"));
+	var noMultiple = (element.attr("noMultiple"))== "true" ? true : false;
+	var response = {};
+	var valor = parseFloat(element.val());
+	var mod = valor % 10;
+	if ((!noMultiple)&&((valor < minValue) || (valor > maxValue) || (mod != 0))) {
+		response.error = true;
+		response.text = "El valor ingresado debe estar entre " + element.attr("min-value") + " y " + element.attr("max-value") + " y debe ser múltipo de 10.";
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+	}
+	clearError(element);
+
+}
+
+/* keypress events */
+function numericConstraint(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[0-9]/);
+}
+
+function alphaCharacters(element, eventData) {
+	var validChar = element.attr("valid-chars");
+	genericPreventKeyPressByRegex(element, eventData, /[A-Za-z0-9_]/);
+}
+
+function alphaConstraint(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z]/);
+}
+
+function alphaNumericConstraint(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z0-9]/);
+}
+
+function alphaNumericConstraintPuntoGuion(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z0-9.\- ]/);
+}
+
+function alphaNumericConstraintUsername(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z0-9_]/);
+}
+
+function alphaNumericConstraintCarry(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z0-9 ]/);
+}
+
+function validateLengthInput(element, eventData) {
+	/* Se valida el rango */
+	var response = {};
+	var maxValue = parseInt(element.attr("max-value"));
+	var minValue = parseInt(element.attr("min-value"));
+	if (element.val() != '' && (element.val().length > maxValue || element.val().length < minValue)) {
+		addErrorMessageTag(element);
+		var msg = element.attr("validate-length-message-error");
+		if (msg) {
+			response.text = msg;
+		} else {
+		response.text = 'El largo debe ser entre ' + minValue + ' y ' + maxValue + '.';
+		}
+		showError(element, response.text);
+		return;
+	}
+	removeError(element);
+}
+
+
+function redValLengthInput(element, eventData) {
+	/* Se valida el rango */
+	var response = {};
+	var cadena = element.val();
+	var maxValue = parseInt(element.attr("max-value"));
+	var minValue = parseInt(element.attr("min-value"));
+
+	var validarEspacio = element.attr("validar-espacio")
+
+	if (validarEspacio) {
+		cadena = cadena.trim();
+	}
+
+	if (cadena != '' && (cadena.length > maxValue || cadena.length < minValue)) {
+		addRedErrorMessageTag(element);
+		var msg = element.attr("validate-length-message-error");
+		if (msg) {
+			response.text = msg;
+		} else {
+			response.text = 'El largo debe ser entre ' + minValue + ' y ' + maxValue + '.';
+		}
+		showRedError(element, response.text);
+		return;
+	}
+	removeRedError(element);
+}
+
+function accentCarryListener(element,eventData){
+	genericBeforeInputByRegex(element,eventData,/[a-zA-Z ]/);
+}
+
+function accentCarryNumericListener(element,eventData){
+	genericBeforeInputByRegex(element,eventData,/[a-zA-Z0-9 ]/);
+}
+
+function alphaConstraintCarry(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-ZÑñ ]/);
+}
+
+function documentConstraint(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z0-9\s-]/);
+}
+
+function passwordConstraint(element, eventData) {
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z0-9.,]/);
+}
+
+/* OutFocus event */
+function checkEmail(element, eventData) {
+	var data = eventData.target.value;
+	var response = genericRegexValidator(element, data, /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i, 'No es un mail válido.');
+	if (response.error) {
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+	}
+	clearError(element);
+}
+
+function checkRedEmail(element, eventData) {
+	var data = element.val();
+	var msg = element.attr("redval-error-email");
+	if(!msg){msg = 'Ingresa un correo electrónico válido';}
+	var response = genericRegexValidator(element, data, /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i, msg);
+	if (response.error) {
+		addRedErrorMessageTag(element);
+		showRedError(element, response.text);
+		return;
+	}
+	removeRedError(element);
+	/*Se valida obligatoriedad*/
+	if (element.attr('data-obligatorio') == 'true') {
+		redvalObligatorio(element, eventData);
+	}
+}
+
+function checkRedCard(element, eventData) {
+	var data = element.val();
+	var msg = element.attr("redval-error-card");
+	if(!msg){msg = 'Debes seleccionar una opcion';}
+	/*Se valida obligatoriedad*/
+	if (element.parent().attr('data-obligatorio') == 'true') {
+		addCardRedErrorMessageTag(element);
+		showCardRedError(element, msg);
+	}
+}
+
+function checkRedCard(element, eventData) {
+	var data = element.val();
+	var msg = element.attr("redval-error-card");
+	if(!msg){msg = 'Debes seleccionar una opcion';}
+	/*Se valida obligatoriedad*/
+	if (element.parent().attr('data-obligatorio') == 'true') {
+		addCardRedErrorMessageTag(element);
+		showCardRedError(element, msg);
+	}
+}
+
+function checkRedEmailClick(element, eventData) {
+	var data = element.val();
+	var response = genericRegexValidator(element, data, /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i, 'No es un mail válido.');
+	if (response.error) {
+		addRedErrorMessageTag(element);
+		showRedError(element, response.text);
+		return;
+	}
+	removeRedError(element);
+}
+
+function checkPhoneNumber(element, eventData) {
+	var maxValue = parseInt(element.attr("max-value"));
+	var keyCode = setkeyCode(eventData);
+	//Para permitir borrar se ignora el backspace(8) en el control de maxValue
+	if (keyCode!=8 && element.val().length >= maxValue) {
+		eventData.preventDefault();
+	}
+	//genericPreventKeyPressByRegex(element, eventData, /[(+)0-9-]/);
+	genericPreventKeyPressByRegex(element, eventData, /^[0-9-]/);
+
+}
+function checkPhoneNumberLength(element, eventData) {
+	/* Se valida el rango */
+	var response = {};
+	var maxValue = parseInt(element.attr("max-value"));
+	if(maxValue==null){
+		maxValue=10
+	}
+	if (element.val() != '' && element.val().length > maxValue) {
+		addErrorMessageTag(element);
+		response.text = 'El n\u00FAmero ingresado  es inv\u00E1lido.';
+		showError(element, response.text);
+		return;
+	}
+	removeError(element);
+}
+
+function cleanTooltip(parent, response, eventData) {
+	if (response.error) {
+		if (!parent.hasClass('fixed')) {
+			parent.addClass('fixed');
+		}
+	} else if (!response.error || isEmpty(eventData.target.value)) {
+		parent.removeClass('fixed');
+	}
+}
+
+function showTooltip(parent, response, eventData) {
+	if (response.error) {
+		if (!parent.hasClass('fixed')) {
+			parent.addClass('fixed');
+		}
+	} else if (!response.error) {
+		parent.removeClass('fixed');
+	}
+}
+
+function removeTooltip(parent, response, eventData) {
+	parent.removeClass('fixed');
+}
+
+function getWrappedParentInstance(element, response) {
+	var parent = element.parent();
+	// Si no tiene un parent generado por este mismo componente con la clase
+	// generic-tooltip
+	if (!parent.hasClass('generic-tooltip')) {
+		// Se wrapea con un elemnto ya que input no permite usar :after y/o
+		// :before
+		try {
+			element.wrap('<div class="generic-tooltip" tooltip-text="' + response.text + '"></div>');
+			parent = element.parent();
+			element.focus();
+		} catch (e) {
+			// Si se consultan muchos elemntos la mismo tiempo se
+		}
+	}
+	return parent
+}
+
+function getWrappedParentInstancePassword(element, response) {
+	var parent = element.parent();
+	// Si no tiene un parent generado por este mismo componente con la clase
+	// generic-tooltip
+	if (!parent.hasClass('generic-tooltip')) {
+		// Se wrapea con un elemnto ya que input no permite usar :after y/o
+		// :before
+		try {
+			element.wrap('<div class="generic-tooltip password-tooltip" tooltip-text="' + response.text + '"></div>');
+			parent = element.parent();
+			element.focus();
+		} catch (e) {
+			// Si se consultan muchos elemntos la mismo tiempo se
+		}
+	}
+	return parent
+}
+
+/**
+ * Verifica que el data sea 'indefined'
+ *
+ * @param data
+ * @returns {Boolean}
+ */
+function isEmpty(data) {
+	return data === undefined || '' === $k.trim(data);
+}
+
+/**
+ * Comportamietno comun en el cual se verifica una expresion regular,
+ * devolviendo un json <code>{error:boolean, text:String}</code>
+ *
+ * @param element
+ *            Debe estar wrapeado con jquery
+ * @param data
+ *            valor a verificar
+ * @param attribute
+ *            Define que atributo del 'element' se emplea para definir si se
+ *            ejecutara o no
+ * @param regex
+ *            Expresion regular
+ * @param mensajeError
+ *            mensaje de error a mostrar en el tooltip
+ * @returns json <code>{error:boolean, text:String}</code>
+ */
+function genericRegexValidator(element, data, regex, mensajeError) {
+	var response = {};
+	if (isEmpty(data)) {
+		response.error = false;
+		return response;
+	}
+	if (!regex.test(data)) {
+		response.error = true;
+		response.text = mensajeError;
+	}
+	return response;
+}
+
+var left = 37; // Left Arrow
+var right = 39; // Right Arrow
+var backspace = 8; // Backspace
+var tab = 9; // Tab
+var del = 46; // Delete
+var end = 35; // End
+var home = 36; // Home
+
+function isKeyCode(keyCode) {
+
+	if (keyCode == left)
+		return true;
+	if (keyCode == right)
+		return true;
+	if (keyCode == backspace)
+		return true;
+	if (keyCode == del)
+		return true;
+	if (keyCode == tab)
+		return true;
+	if (keyCode == end)
+		return true;
+	if (keyCode == home)
+		return true;
+	return false;
+}
+function isEventDataOp(eventData, op) {
+	if (eventData.keyCode == op && eventData.which == op)
+		return true;
+	return false;
+}
+function isEventDataCero(eventData, op) {
+	if (eventData.keyCode == 0 && eventData.which == op)
+		return true;
+	return false;
+}
+function isEventDataDel(eventData, op) {
+	if (eventData.keyCode == 46 && eventData.which == op)
+		return true;
+	return false;
+}
+function setkeyCode(eventData) {
+	if (eventData.keyCode == 0 && eventData.which == 46) {// De esta forma no
+		// toma el caracter
+		// \. como si fuera
+		// el \supr en
+		// Mozilla
+		return 0;
+	} else {
+		return eventData.keyCode || eventData.which;
+	}
+}
+
+function genericBeforeInputByRegex(element,eventData,regex){
+	if (!regex.test(eventData.data)){
+		eventData.preventDefault();
+	}
+}
+
+function genericPreventKeyPressByRegex(element, eventData, regex) {
+	var keyCode = setkeyCode(eventData);
+	var key = String.fromCharCode(keyCode);
+
+	// Chrome && Mozilla
+	var cond2 = (!isEventDataOp(eventData, left) && !isEventDataCero(eventData, left) && !isEventDataDel(eventData, del));
+
+	// De esta forma no toma el caracter \. como si fuera el \supr en Chrome
+	var cond3 = (!isEventDataOp(eventData, home) && !isEventDataOp(eventData, end) && !isEventDataCero(eventData, end) && !isEventDataCero(eventData, home));
+
+
+	if ((isKeyCode(keyCode)) && ((cond2) && (cond3)))
+		return;
+	if (!regex.test(key)){
+			eventData.preventDefault();
+	}
+
+}
+
+function checkPassword(element, eventData) {
+	var response = {
+		error : true,
+		text : 'La clave virtual:\n - Debe incluir 8 a 30 caracteres.\n - Debe contener n\u00FAmeros y letras.\n - No se debe utilizar tilde.\n - No debe contener caracteres especiales, solo permit\u00E9 el uso de la coma y punto.\n - El usuario y la clave no deben ser iguales, ni debe ser el Nro. de C\u00E9dula identificaci\u00F3n, Pasaporte, DIMEX y DIDI.'
+	};
+	var parent = getWrappedParentInstancePassword(element, response);
+	showTooltip(parent, response, eventData);
+	setTimeout(function() {
+		parent.removeClass('fixed')
+	}, 10000)
+}
+
+function validatePassword() {
+	addFunctionality('.validate-password', 'focusin', checkPassword);
+}
+
+function validateClave(selector, reg, mensaje, mensajeDefault) {
+	var fields = $k(selector);
+	if (fields.length == 0) {
+		return;
+	}
+	jQuery.each(fields, function(index, field) {
+		var jqueryElement = $k(field);
+		jqueryElement.on('focusout', function(eventData) {
+			checkClave(jqueryElement, eventData, reg, mensaje, mensajeDefault);
+		});
+		jqueryElement.on('keyup', function(eventData) {
+			checkClave(jqueryElement, eventData, reg, mensaje, mensajeDefault);
+		});
+	});
+}
+
+function checkClave(element, eventData, reg, mensaje, mensajeDefault) {
+	var data = eventData.target.value;
+	$k("#validarUsuario").val('');
+	if(data == ""){
+		addErrorMessageTag(element);
+		showError(element, mensajeDefault);
+	}else{
+		var response = genericRegexValidator(element, data, reg);
+		if (response.error) {
+			response.error = mensaje;
+			addErrorMessageTag(element);
+			showError(element, response.error);
+			$k("#validarUsuario").val('');
+			return;
+		}
+		$k("#validarUsuario").val('1');
+		removeError(element);
+	}
+}
+
+
+
+
+
+function validatePasswordAndVerifyMatch(selector, secondSelector, reg, mensaje, mensajeDefault,mensajeDefaultSecondSelector, mensajeMatch) {
+	var fields = $k(selector);
+	if (fields.length == 0) {
+		return;
+	}
+	
+	var jqueryElement = $k(fields[0]);
+
+	
+	
+	var fieldSecondSelector = $k(secondSelector);
+	if (fieldSecondSelector.length == 0) {
+		return;
+	}
+	
+	var jquerySecondElement = $k(fieldSecondSelector[0]);
+	
+	
+	jqueryElement.on('focusout', function(eventData) {
+		if ( checkPasswordVerifyMessage(jqueryElement, eventData, reg, mensaje, mensajeDefault) ) {
+			return;
+		}
+		if ( checkPasswordMatch(jqueryElement, jquerySecondElement, reg, mensaje, mensajeMatch) ) {
+			return;
+		}
+
+	});
+	
+	jqueryElement.on('keyup', function(eventData) {
+		if ( checkPasswordVerifyMessage(jqueryElement, eventData, reg, mensaje, mensajeDefault) ) {
+			return;
+		}
+		if ( checkPasswordMatch(jqueryElement, jquerySecondElement, reg, mensaje, mensajeMatch) ) {
+			return;
+		}
+
+	});
+	
+	
+	jquerySecondElement.on('focusout', function(eventData) {
+		if ( checkPasswordVerifyMessage(jquerySecondElement, eventData, reg, mensaje, mensajeDefaultSecondSelector) ) {
+			return;
+		}
+		if ( checkPasswordMatch(jqueryElement, jquerySecondElement, reg, mensaje, mensajeMatch) ) {
+			return;
+		}
+	});
+	
+	jquerySecondElement.on('keyup', function(eventData) {
+		if ( checkPasswordVerifyMessage(jquerySecondElement, eventData, reg, mensaje, mensajeDefaultSecondSelector) ) {
+			return;
+		}
+		if ( checkPasswordMatch(jqueryElement, jquerySecondElement, reg, mensaje, mensajeMatch) ) {
+			return;
+		}
+	});
+	
+		
+}
+
+function checkPasswordVerifyMessage(element, eventData, reg, mensaje, mensajeDefault) {
+	var data = eventData.target.value;
+	if(data == ""){
+		addErrorMessageTag(element);
+		showError(element, mensajeDefault);
+		return true;
+	}else{
+		var response = genericRegexValidator(element, data, reg);
+		if (response.error) {
+			response.error = mensaje;
+			addErrorMessageTag(element);
+			showError(element, response.error);
+			return true;
+		}
+		removeError(element);
+	}
+}
+
+function checkPasswordMatch(element, secondElement, reg, mensaje, mensajeDefault) {
+	
+	if ( element.val() !== secondElement.val() ){
+		
+		addErrorMessageTag(secondElement);
+		showError(secondElement, mensajeDefault);
+		return true;
+	}
+	removeError(secondElement);
+	
+}
+
+function pasaporteValidate(element, eventData) {
+	var response = {};
+	var numero = element.val();
+	genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z0-9]/);
+	if (numero.trim().length == 0 || numero.trim().length > 13) {
+		response.error = true;
+		response.error = "Identificación ingresada no es válida.";
+		addErrorMessageTag(element);
+		showError(element, response.error);
+		return;
+	}
+
+	var validos = " abcdefghijklmnopqrstuvwxyz0123456789";
+	var letra;
+	var bien = true;
+	for (var i=0; i < numero.length; i++) {
+	   letra=numero.charAt(i).toLowerCase()
+	   if (validos.indexOf(letra) == -1)
+	    	bien=false;
+	}
+	if (!bien) {
+		response.error = true;
+		response.error = "Identificación ingresada no es válida.";
+		addErrorMessageTag(element);
+		showError(element, response.error);
+		return;
+	}
+
+	removeError(element);
+}
+
+function redvalPasaporte(element, eventData) {
+	var response = {};
+	var numero = element.val();
+	//genericPreventKeyPressByRegex(element, eventData, /[a-zA-Z0-9]/);
+	if (numero.trim().length == 0 || numero.trim().length > 13) {
+		response.error = true;
+		response.error = "Identificación ingresada no es válida.";
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+
+	var validos = "abcdefghijklmnopqrstuvwxyz0123456789";
+	var letra;
+	var bien = true;
+	for (var i=0; i < numero.length; i++) {
+		letra=numero.charAt(i).toLowerCase()
+		if (validos.indexOf(letra) == -1)
+			bien=false;
+	}
+	if (!bien) {
+		response.error = true;
+		response.error = "Identificación ingresada no es válida.";
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+
+	removeRedError(element);
+}
+
+function rucValidate(element, eventData) {
+
+	var response = {};
+	var numero = element.val();
+
+	if (numero.trim().length == 0 || numero.trim().length > 13 ||numero.trim().length < 13) {
+		response.error = true;
+		response.error = "Identificación ingresada no es válida.";
+		addErrorMessageTag(element);
+		showError(element, response.error);
+		return;
+	}
+
+	var validos = "0123456789";
+	var letra;
+	var bien = true;
+	for (var i=0; i < numero.length; i++) {
+	   letra=numero.charAt(i).toLowerCase()
+	   if (validos.indexOf(letra) == -1)
+	    	bien=false;
+	}
+	if (!bien) {
+		response.error = true;
+		response.error = "Identificación ingresada no es válida.";
+		addErrorMessageTag(element);
+		showError(element, response.error);
+		return;
+	}
+	removeError(element);
+}
+
+
+function redvalRuc(element, eventData) {
+
+	var response = {};
+	var numero = element.val();
+
+	if (numero.trim().length == 0 || numero.trim().length > 13 ||numero.trim().length < 13) {
+		response.error = true;
+		response.error = "Identificación ingresada no es válida.";
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+
+	var validos = "0123456789";
+	var letra;
+	var bien = true;
+	for (var i=0; i < numero.length; i++) {
+		letra=numero.charAt(i).toLowerCase()
+		if (validos.indexOf(letra) == -1)
+			bien=false;
+	}
+	if (!bien) {
+		response.error = true;
+		response.error = "Identificación ingresada no es válida.";
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+	removeRedError(element);
+}
+
+
+function validCedula(numero) {
+	if (numero.trim().length != 10) {
+		return true;
+	}
+	if (numero.trim() == "") {
+		return true;
+	}
+	return false;
+}
+
+/*Valida:
+ *  - Si es cedula que solo se tipeen numeros y la longitud no sea superior a 10
+ *  - Si es otro caso (PAS-RUC) permite el ingreso de letras y una longitud de 13 digitos
+ * */
+function cedulaLenghtValidate(element, eventData) {
+	var value = element.val();
+	var idTipoDoc = element.attr("typedoc-id");
+	if (idTipoDoc) {
+		var valueTipoDoc = $k('#'+idTipoDoc).val();
+		if( eventData.keyCode >= 37 && eventData.keyCode <= 40 ) {
+			return true; //Permite el tipeo de las flechas
+		}
+		if( eventData.keyCode === 8 ||eventData.keyCode === 46 ||eventData.keyCode === 9  ) {
+			return true; // backspace (8) / delete (46) tab(9)
+		}
+
+		if (this.getSelection().toString().length>0)
+			return true;// permite pisar el texto si esta seleccionado
+
+		if (valueTipoDoc.indexOf('CED') != -1) {
+			genericPreventKeyPressByRegex(element, eventData, /[0-9]/);
+			if (value.length > 9 ) {
+				eventData.preventDefault();
+			}
+		} else {
+			if (value.length > 12) {
+				eventData.preventDefault();
+			}
+		}
+	}
+	return true;
+}
+
+function onlyNumbers(element,e) {
+	   if (e.shiftKey)
+           e.preventDefault();
+       else
+       {
+           var nKeyCode = e.keyCode;
+
+           //Ignore Backspace and Tab keys
+           if (nKeyCode == 8 || nKeyCode == 9)
+              return;
+           if (nKeyCode < 95)
+           {
+               if (nKeyCode < 48 || nKeyCode > 57)
+                   e.preventDefault();
+           }
+           else
+           {
+               if (nKeyCode < 96 || nKeyCode > 105)
+               e.preventDefault();
+           }
+       }
+}
+
+
+function onlyAlpha(element,e) {
+		var nKeyCode = e.keyCode;
+		//Ignore Backspace and Tab keys
+		if (nKeyCode == 8 || nKeyCode == 9 || nKeyCode == 32)
+			return;
+		if (nKeyCode < 97)
+		{
+			if (nKeyCode < 65 || nKeyCode > 90)
+				e.preventDefault();
+		}
+		else
+		{
+			if (nKeyCode < 97 || nKeyCode > 122)
+				e.preventDefault();
+		}
+
+}
+
+/*Funcion utilizada para la validacion de cedula*/
+function obtenerValorAcumulado(cedula) {
+	var acum = 0;
+	for (var j = 1; j <= 9; j++) {
+		var val = 0;
+		var value = cedula.substring(j - 1, j);
+		if (value.trim() != "")
+			val = parseInt(value);
+
+		if (j % 2 == 0) {
+			acum = acum + val;
+		} else {
+			var paso = val * 2;
+			if (paso > 9) {
+				paso = paso - 9;
+			}
+			acum = acum + paso;
+		}
+	}
+	return acum;
+}
+
+/*Valida el ingreso de 2 apellidos, y espacios en blancos exagerados*/
+function apellidosValidate(element, eventData) {
+
+	const validation = /^([a-zA-ZÀ-ÿ\u00E0-\u00FC]{0}?[a-zA-ZÀ-ÿ\u00E0-\u00FC]+[\s])+([a-zA-ZÀ-ÿ\u00E0-\u00FC]{0}?[a-zA-ZÀ-ÿ\u00E0-\u00FC])+[\s]?([a-zA-ZÀ-ÿ\u00E0-\u00FC]{0}?[a-zA-ZÀ-ÿ\u00E0-\u00FC])?$/g;
+
+    var numero2 = element.val();
+    var sinError = validation.test(numero2);
+    var response = {};
+
+    if (!sinError) {
+  		response.error = true;
+  	}
+  	if (response.error) {
+  		response.error = "Ingrese los dos apellidos.";
+  		addErrorMessageTag(element);
+  		showError(element, response.error);
+  		return;
+  	}
+  	clearError(element);
+
+
+ }
+
+
+function cedulaValidate(element, eventData) {
+	var response = {};
+	var numero = element.val();
+	response.error = validCedula(numero);
+	var idTipoDoc = element.attr("typedoc-id");
+	var valueTipoDoc = $k('#'+idTipoDoc).val();
+	if (valueTipoDoc.indexOf('CED') == -1) {
+		clearError(element);
+		return;
+	}
+	/** Recupero la cedula y provincia */
+	var cedula = numero.trim();
+	var provincia = parseInt(cedula.trim().substring(0, 2));
+	/** Valido la provincia */
+	if (provincia > 30 || provincia < 1) {
+		response.error = true;
+	}
+	/** Recupero el acumulado del valor */
+	var acum = obtenerValorAcumulado(cedula);
+	acum = 10 - (acum % 10);
+	if (acum == 10) {
+		acum = 0;
+	}
+	/** Recupero el complemento y realizo la validacion */
+	var comp = parseInt(cedula.substring(9));
+	if (comp != acum) {
+		response.error = true;
+	}
+	if (response.error) {
+		response.error = "Identificación ingresada no es válida.";
+		addErrorMessageTag(element);
+		showError(element, response.error);
+		return;
+	}
+	clearError(element);
+}
+
+
+function redvalCedula(element, eventData) {
+	var response = {};
+	var numero = element.val();
+	response.error = validCedula(numero);
+	var idTipoDoc = element.attr("typedoc-id");
+	var valueTipoDoc = $k('#'+idTipoDoc).val();
+	if (valueTipoDoc.indexOf('CED') == -1) {
+		clearError(element);
+		return;
+	}
+	/** Recupero la cedula y provincia */
+	var cedula = numero.trim();
+	var provincia = parseInt(cedula.trim().substring(0, 2));
+	/** Valido la provincia */
+	if (provincia > 30 || provincia < 1) {
+		response.error = true;
+	}
+	/** Recupero el acumulado del valor */
+	var acum = obtenerValorAcumulado(cedula);
+	acum = 10 - (acum % 10);
+	if (acum == 10) {
+		acum = 0;
+	}
+	/** Recupero el complemento y realizo la validacion */
+	var comp = parseInt(cedula.substring(9));
+	if (comp != acum) {
+		response.error = true;
+	}
+	if (response.error) {
+		response.error = "Identificación ingresada no es válida.";
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+	//clearError(element);
+	removeRedError(element);
+}
+
+
+
+function removeErrorMessage(element) {
+	if ($k('#input-error_' + element.attr('id')).length != 0) {
+		$k('#input-error_' + element.attr('id')).remove();
+	}
+
+}
+/* PlaceHolder de los select */
+$k(document).ready(function() {
+
+	$k("select").change(function() {
+		if ($k(this).hasClass("js-select") || $k(this).hasClass("js-select-cuenta"))
+			placeholderSelectAutoComplete($k(this));
+		else
+			placeholderSelect($k(this));
+	});
+	$k("select").each(function() {
+		placeholderSelect($k(this));
+	});
+});
+
+function placeholderSelect(elemento) {
+	if (elemento.val() == "" || elemento.val() == "0")
+		elemento.addClass('noSelect');
+	else
+		elemento.removeClass('noSelect');
+}
+function placeholderSelectAutoComplete(elemento) {
+	var firstElementSelect;
+	/*Si el elemento error esta presente, entonces el primer elemento del select es el siguiente hijo del em. */
+	if (elemento.next().is("em")) {
+		firstElementSelect = elemento.next().next();
+	} else {
+		firstElementSelect = elemento.next();
+	}
+	if (elemento.val() == "" || elemento.val() == "0") {
+		firstElementSelect.find("span.selection > span.select2-selection > span").addClass('noSelect');
+	} else {
+		firstElementSelect.find("span.selection > span.select2-selection > span").removeClass('noSelect');
+	}
+}
+
+function validateNotSameCharacter(element, eventData){
+	var value = element.val();
+	var response = {};
+	var error = false;
+	var charsToSearch = [0,0,0,0,0,0,0,0,0,0]; // 0 - 9 contadores
+	var errorMessage = 'Ingrese una clave de 6 diferentes dígitos.';
+	if (!value){
+		return;
+	}
+
+		var length = value.length;
+		for(var i = 0;i < length; i++){
+			var num = parseInt(value.charAt(i));
+			var arrayValue = charsToSearch[num];
+			charsToSearch[num] = arrayValue + 1;
+		}
+
+		if((charsToSearch[0] == 6 || charsToSearch[1] == 6 || charsToSearch[1] == 6 || charsToSearch[2] == 6 || charsToSearch[3] == 6 || charsToSearch[4] == 6 || charsToSearch[5] == 6 || charsToSearch[6] == 6 || charsToSearch[7] == 6 || charsToSearch[8] == 6 || charsToSearch[9] == 6 )){
+			error = true;
+		}
+
+		if (error) {
+			response.error = true;
+			response.text = errorMessage;
+			addErrorMessageTag(element);
+			showError(element, response.text);
+			return;
+		}
+
+		var min = 6;
+		var response = {};
+	    var msg = errorMessage;
+	    var value = element.val();
+	    if (!value){
+	    	return;
+	    }
+
+	    var valueLeng = value.length;
+
+	    if (valueLeng < min) {
+			response.error = true;
+			response.text = msg;
+			addErrorMessageTag(element);
+			showError(element, response.text);
+			return;
+	    }
+
+
+	removeError(element);
+}
+
+function validateDactilarCodeLenght(element, eventData){
+	var value = element.val();
+	var errorMessage = 'Ingrese el código dactilar de 10 caracteres.';
+	return	validateLongitudWithMessage(element, 10 ,errorMessage);
+}
+
+function validateLongitudWithMessage(element,min,errorMessage) {
+	var response = {};
+    var msg = errorMessage;
+    var value = element.val();
+    if (!value){
+    	return;
+    }
+
+    var valueLeng = value.length;
+
+    if (valueLeng < min) {
+		response.error = true;
+		response.text = msg;
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+    }
+    removeError(element);
+}
+
+/* Fin de placeHolder de los select */
+function validateObligatorio(element, eventData) {
+	var response = {};
+	var label = $k('label[for="' + element.attr('id') + '"]');
+	var typeElement = element.get(0).tagName;
+
+	if (element.attr('error-msg')) {
+		response.error = element.attr('error-msg');
+	} else {
+		var prefijo="Ingrese ";
+		if(typeElement == 'SELECT'){
+
+			prefijo="Seleccione ";
+		}
+		var messageValidate = prefijo + label.text().trim().toLowerCase()+'.';
+		messageValidate = messageValidate.replace('pacificard','PacifiCard');
+		response.error = messageValidate;
+	}
+
+	var imputEmpty = emptyElement(typeElement,element);
+
+	var selectEmpty = (typeElement == 'SELECT' && (element.val() == null || (element.val() == 0 && $k('#'+element.attr('id')+' option:selected').text().indexOf("Seleccione") !== -1)))
+	if (imputEmpty || selectEmpty) {
+		addErrorMessageTag(element);
+		showError(element, response.error);
+		return;
+	}
+	if (element.parent().find("em").length != 0 && (element.parent().find("em").html().indexOf(response.error) != -1 )) {
+		removeError(element);
+	}
+}
+
+function redvalObligatorio(element, eventData) {
+	var response = {};
+	var span = $k('span[for="' + element.attr('id') + '"]');
+	var typeElement = element.get(0).tagName;
+
+	if (element.attr('error-msg')) {
+		response.error = element.attr('error-msg');
+	} else {
+		var prefijo="Ingrese ";
+		if(typeElement == 'SELECT'){
+			prefijo="Seleccione ";
+		}
+		var messageValidate = prefijo + span.text().trim().toLowerCase()+'.';
+		messageValidate = messageValidate.replace('pacificard','PacifiCard');
+		response.error = messageValidate;
+	}
+
+	var imputEmpty = emptyElement(typeElement,element);
+
+	var selectEmpty = (typeElement == 'SELECT' && (element.val() == null || (element.val() == 0 && $k('#'+element.attr('id')+' option:selected').text().indexOf("Seleccione") !== -1)))
+	if (imputEmpty || selectEmpty) {
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+	if (element.parent().parent().find(".ld-text-field-helper-line").find(".ld-text-field-helper-text").length != 0) {
+		removeRedError(element);
+		redValLengthInput(element);
+	}
+}
+
+function redvalMontoEnteroField(element, eventData) {
+	var min = element.attr("data-min");
+	min = min == "" || !min ? 1 : min;
+	var max = element.attr("data-max");
+	if(max == "no"){
+		content = element.val();
+	} else {
+		max = max == "" || !max ? 999999 : max;
+		var msgBase =  element.attr("redval-error-monto");
+		if(!msgBase){msgBase = 'El monto debe estar entre $'+min+' y $'+max;}
+		var content = element.val();
+		if (!element.val()) {
+			addRedErrorMessageTag(element);
+			showRedError(element, msgBase);
+			return;
+		}
+	}
+
+	var msg = element.attr("redval-error-min");
+	if(!msg){msg = 'El monto minimo es de $'+min;}
+	if(parseInt(min) > parseInt(content.replace('$',''))){
+		addRedErrorMessageTag(element);
+		showRedError(element, msg);
+		return;
+	}
+	if(parseInt(max) < parseInt(content.replace('$',''))){
+		addRedErrorMessageTag(element);
+		showRedError(element, msgBase);
+		return;
+	}
+	var saldo =  element.attr("redval-monto-saldo");
+	if(saldo){
+		msg = element.attr("redval-error-saldo");
+		if(!msg){msg = 'Esta cantidad supera el monto permitido';}
+		if(parseInt(saldo) < parseInt(content.replace('$',''))){
+			addRedErrorMessageTag(element);
+			showRedError(element, msg);
+			return;
+		}
+	}
+	removeRedError(element);
+	/*Se valida obligatoriedad*/
+	if (element.attr('data-obligatorio') == 'true') {
+		redvalObligatorio(element, eventData);
+	}
+}
+
+function redvalMontoDinamicField(element, eventData) {
+	var min = element.attr("data-min");
+	min = min == "" || !min ? 0.01 : min;
+	var max = element.attr("data-max");
+	if(max == "no"){
+		content = element.val();
+	} else {
+		max = max == "" || !max ? 999999.99 : max;
+		var msgBase =  element.attr("redval-error-monto");
+		if(!msgBase){msgBase = 'El monto debe estar entre $'+min+' y $'+max;}
+		var 	content = element.val();
+		if (!element.val()) {
+			addRedErrorMessageTag(element);
+			showRedError(element, msgBase);
+			return;
+		}
+	}
+
+	var msg = element.attr("redval-error-min");
+	if(!msg){msg = 'El monto minimo es de $'+min;}
+	if(parseFloat(min) > parseFloat(content.replace('$',''))){
+		addRedErrorMessageTag(element);
+		showRedError(element, msg);
+		return;
+	}
+	if(parseFloat(max) < parseFloat(content.replace('$',''))){
+		addRedErrorMessageTag(element);
+		showRedError(element, msgBase);
+		return;
+	}
+	var saldo =  element.attr("redval-monto-saldo");
+	if(saldo){
+		msg = element.attr("redval-error-saldo");
+		if(!msg){msg = 'Esta cantidad supera el monto permitido';}
+		if(parseFloat(saldo) < parseFloat(content.replace('$',''))){
+			addRedErrorMessageTag(element);
+			showRedError(element, msg);
+			return;
+		}
+	}
+	removeRedError(element);
+	/*Se valida obligatoriedad*/
+	if (element.attr('data-obligatorio') == 'true') {
+		redvalObligatorio(element, eventData);
+	}
+}
+
+function redvalNumericDinamicField(element, eventData) {
+	var response = {};
+	var value = element.val();
+	var min = element.attr("data-min");
+	var max = element.attr("data-max");
+	if (min != null && min != "" && (parseFloat(value) < parseFloat(min))) {
+		response.error = "Debe ser mayor a " + min;
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+	if (max != null && max != "" && max != "0" && (parseFloat(value) > parseFloat(max))) {
+		response.error = "Debe ser menor a " + max;
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+	/*Se valida el largo*/
+	if (element.attr('data-largo-maximo') && element.attr('data-largo-maximo')>0) {
+		/*Si mostro error, sale*/
+		if (redvalLengthDinamicField(element)) {
+			return;
+		}
+	}
+	removeRedError(element);
+	/*Se valida obligatoriedad*/
+	if (element.attr('data-obligatorio') == 'true') {
+		redvalObligatorio(element, eventData);
+	}
+}
+
+function redvalLengthDinamicField(element) {
+	/* Se valida el rango */
+	var response = {};
+	var maxValue = parseInt(element.attr("data-largo-maximo"));
+
+	if (element.attr("data-obligacion-largo-maximo") == 'true') {
+		if (element.val() != '' && (element.val().length !== maxValue)) {
+			addRedErrorMessageTag(element);
+			response.text = 'El largo debe ser igual a ' + maxValue;
+			showRedError(element, response.text);
+			return true;
+		}
+	} else {
+		if (element.val() != '' && (element.val().length > maxValue)) {
+			addRedErrorMessageTag(element);
+			response.text = 'El largo debe ser menor a ' + maxValue;
+			showRedError(element, response.text);
+			return true;
+		}
+	}
+	return false;
+}
+
+function redvalAlphanumericDinamicField(element, eventData) {
+	/*Se valida el largo*/
+	if (element.attr('data-largo-maximo') && element.attr('data-largo-maximo')>0) {
+		/*Si mostro error, sale*/
+		if (redvalLengthDinamicField(element)) {
+			return;
+		}
+	}
+	removeRedError(element);
+	/*Se valida obligatoriedad*/
+	if (element.attr('data-obligatorio') == 'true') {
+		redvalObligatorio(element, eventData);
+	}
+	redvalCharactersAlphaNumericField(element);
+}
+
+function redvalCharactersAlphaNumericField(element) {
+	var response = {};
+
+	var reg = /^[a-zA-Z0-9\u00f1\u00d1]([a-zA-Z0-9\u00f1\u00d1 ]*[a-zA-Z0-9\u00f1\u00d1])?$/;
+	var data = element.val()
+
+	var response = genericRegexValidator(element, data, reg);
+	if (response.error) {
+		addRedErrorMessageTag(element);
+		response.text = 'No debe ingresar espacios al inicio o al final';
+		showRedError(element, response.text);
+		return true;
+	}
+	return false;
+}
+
+function redvalDecimalDinamicField(element, eventData) {
+	var response = {};
+	var value = element.val();
+	var min = element.attr("data-min");
+	var max = element.attr("data-max");
+	if (min != null && min != "" && (parseFloat(value) < parseFloat(min))) {
+		response.error = "Debe ser mayor a " + min;
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+	if (max != null && max != "" && max != "0" && (parseFloat(value) > parseFloat(max))) {
+		response.error = "Debe ser menor a " + max;
+		addRedErrorMessageTag(element);
+		showRedError(element, response.error);
+		return;
+	}
+	/*Se valida el largo*/
+	if (element.attr('data-largo-maximo') && element.attr('data-largo-maximo')>0) {
+		/*Si mostro error, sale*/
+		if (redvalLengthDinamicField(element)) {
+			return;
+		}
+	}
+	removeRedError(element);
+	/*Se valida obligatoriedad*/
+	if (element.attr('data-obligatorio') == 'true') {
+		redvalObligatorio(element, eventData);
+	}
+}
+
+/* Fin de placeHolder de los select */
+function validateObligatorioCondicional(element, eventData) {
+	var response = {};
+	var label = $k('label[for="' + element.attr('id') + '"]');
+	var typeElement = element.get(0).tagName;
+
+	if(element.hasClass('validate-obligatorioCondicional'))
+    {
+		if (element.attr('error-msg')) {
+			response.error = element.attr('error-msg');
+		} else {
+			var prefijo="Ingrese ";
+			if(typeElement == 'SELECT'){
+
+				prefijo="Seleccione ";
+			}
+			var messageValidate = prefijo + label.text().trim().toLowerCase()+'.';
+			messageValidate = messageValidate.replace('pacificard','PacifiCard');
+			response.error = messageValidate;
+		}
+
+		var imputEmpty = emptyElement(typeElement,element);
+
+		var selectEmpty = (typeElement == 'SELECT' && (element.val() == null || (element.val() == 0 && $k('#'+element.attr('id')+' option:selected').text().indexOf("Seleccione") !== -1)))
+		if (imputEmpty || selectEmpty) {
+			addErrorMessageTag(element);
+			showError(element, response.error);
+			return;
+		}
+		if (element.parent().find("em").length != 0 && (element.parent().find("em").html().indexOf(response.error) != -1 )) {
+			removeError(element);
+		}
+
+	}
+}
+
+function emptyElement(typeElement,element){
+	if(typeElement == 'INPUT'|| typeElement == 'TEXTAREA'){
+		return (element.val().trim() == '');
+	}else{
+		var valor = "";
+		if(element.val() == null){
+			return true;
+		} else {
+			valor = element.val();
+			if(Array.isArray(valor)){
+				return (valor.length == 0);
+			} else {
+				return (valor.trim() == '');
+			}
+		}
+	}
+}
+
+function onlyWhitespace(element){
+	if(element==null){
+		return
+	}
+	if(/^\s*$/.test(element.val())){
+		var label = $k('label[for="' + element.attr('id') + '"]');
+		addErrorMessageTag(element);
+
+		showError(element, "El valor ingresado en "+label.text().trim().toLowerCase()+" es inv\u00E1lido." );
+	}else{
+		removeError(element);
+	}
+}
+
+function validateMontoCNT(element, eventData) {
+	var value = parseFloat(element.val());
+	var response = {};
+	var valuesOk = [1,3,5,6,10,15,20];
+	var error = true;
+	if (!value)
+		return;
+	for (var i = 0; i < valuesOk.length; i++) {
+		if(value == valuesOk[i]) {
+			error = false;
+			break;
+		}
+	}
+	if (error) {
+		response.error = true;
+		response.text = 'Por favor, ingrese precios fijos de $1, $3, $5, $6, $10, $15, $20.';
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+	}
+	if (element.attr("data-min") && element.attr("data-max")) {
+		var min = parseFloat(element.attr("data-min")).toFixed(2);
+		var max = parseFloat(element.attr("data-max")).toFixed(2);
+		return	validateMontoPlazo(element, min, max);
+	}
+	removeError(element);
+}
+
+
+function validateMontoClaro(element, eventData) {
+	var value = parseFloat(element.val());
+	var response = {};
+	if (!value)
+		return;
+	if (value != 3 && (value < 5 || value > 20 || value % 1 !=0)) {
+		response.error = true;
+		response.text = 'Por favor, ingrese precios fijos de $3 y desde $5,6,7 …. hasta $20 en múltiplos de 1.';
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+	}
+
+	if (element.attr("data-min") && element.attr("data-max")) {
+		var min = parseFloat(element.attr("data-min")).toFixed(2);
+		var max = parseFloat(element.attr("data-max")).toFixed(2);
+		return validateMontoPlazo(element, min, max);
+	}
+	removeError(element);
+}
+
+function validateMontoPlazo(element,min,max) {
+	var response = {};
+    var msg = 'El monto debe estar entre ' + min + ' y ' + max + '.';
+    var value = parseFloat(element.val());
+    if (!value)
+    	return;
+    if (value > max || value < min) {
+		response.error = true;
+		response.text = msg;
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+    }
+    removeError(element);
+}
+
+function validateMontoMovistar(element, eventData) {
+	var value = parseFloat(element.val());
+	var response = {};
+	if (!value)
+		return;
+	if (value < 0.5 || value > 20) {
+		response.error = true;
+		response.text = 'Por favor, ingrese un valor entre $0.50 y $20.00.';
+		addErrorMessageTag(element);
+		showError(element, response.text);
+		return;
+	}
+	if (element.attr("data-min") && element.attr("data-max")) {
+		var min = parseFloat(element.attr("data-min")).toFixed(2);
+		var max = parseFloat(element.attr("data-max")).toFixed(2);
+		return validateMontoPlazo(element, min, max);
+	}
+	removeError(element);
+}
+
+
+/*Fin validaciones para recarga de celuar*/
+
+function validateCaracteresEspeciales(element,eventData){
+	var keyCode = setkeyCode(eventData);
+	var key = String.fromCharCode(keyCode);
+	var characterReg = /\[|\&|\<|\>|\\|\"|\'|\/|\]/
+
+	if(characterReg.test(key) &&  !(eventData.key !== undefined && eventData.charCode === 0)) {
+		eventData.preventDefault();
+  }
+}
+
+function removeNonAlphanum(evt){
+	var regex = /^[a-zA-Z0-9_]+$/;
+	var anterior=evt.currentTarget.value;
+	evt.currentTarget.value=checkCharacters(anterior, regex);
+}
+
+function checkCharacters(currentValue, regex){
+    var aux = '';
+    for (var i = 0, len = currentValue.length; i < len; i++) {
+        var key = currentValue[i];
+        if (regex.test(key)) {
+            aux += key;
+        }
+    }
+    return aux;
+}
+
+function validateCaracteresEspecialesLogin(element,eventData){
+	var keyCode = setkeyCode(eventData);
+	if(keyCode == 13){
+		return true;
+	}
+	removeNonAlphanum(eventData);
+}
+function validateCaracteresEspecialesLoginKeyDown(eventData){
+
+	var keyCode = setkeyCode(eventData);
+	if(keyCode == 13){
+		return true;
+	}
+	var regex = /^[a-zA-Z0-9_]+$/;
+    var key = eventData.key;
+    return (regex.test(key));
+
+}
+
+function redRemoveCaracteres(evt,regex){
+	var anterior=evt.currentTarget.value;
+	evt.currentTarget.value=checkCharacters(anterior, regex);
+}
+function redvalCaracteresAlphaNum(element,eventData){
+	var keyCode = setkeyCode(eventData);
+	if(keyCode == 13){
+		return true;
+	}
+	var regex = /^[a-zA-Z0-9\u00f1\u00d1 ]+$/;
+	redRemoveCaracteres(eventData,regex);
+}
+function redvalCaracteresAlphabet(element,eventData){
+	var keyCode = setkeyCode(eventData);
+	if(keyCode == 13){
+		return true;
+	}
+	var regex = /^[a-zA-Z\u00f1\u00d1 ]+$/;
+	redRemoveCaracteres(eventData,regex);
+}
+function redvalCaracteresNumeric(element,eventData){
+	var keyCode = setkeyCode(eventData);
+	if(keyCode == 13){
+		return true;
+	}
+	var regex = /^[0-9]+$/;
+	redRemoveCaracteres(eventData,regex);
+}
+
+/*
+ * La siguiente funcion chequea que la cuenta seleccionada en comboCuentasId tenga el saldo suficiente para debitar el montoPago,
+ * y en caso de que no sea suficiente muestra el mensaje en el elemento recuperado con comboMsgId.
+ */
+function validateMontoDisponibleEnCuenta(comboCuentasId, montoPago, comboMsgId){
+	if (comboMsgId==undefined){
+		comboMsgId=comboCuentasId;
+	}
+	var customerId = $k("#"+comboCuentasId+" option:selected").val();
+	customerId = customerId.substring(customerId.indexOf("uriSFB=") + 7)
+	var uriSFB = customerId.substring(0, 4);
+	if(uriSFB != "MCE2")
+	{
+		if(uriSFB != "COR2"){
+			var comboCuentas = $k("#"+comboCuentasId);
+			var comboMsg = $k("#"+comboMsgId);
+			var montoCuenta = comboCuentas.find(":selected").attr("monto");
+			if(parseFloat(montoCuenta) < parseFloat(montoPago)){
+				addErrorMessageTag(comboMsg);
+				showError(comboMsg, 'El monto a debitar supera el saldo disponible de su cuenta.');
+				return;
+			}
+			removeError(comboMsg);
+		}
+	}
+}
+
+function checkMontoRedEnable(monto) {
+	var filled = false;
+	var montoTxt = $k(monto).val();
+	if ( montoTxt && montoTxt != '') {
+		if(parseFloat(montoTxt.replace('$','')) > parseFloat(0)){
+			filled = true;
+		}
+	}
+	var hasError = pageHasMontoRedError(monto);
+	return filled && !hasError;
+}
+
+function checkRedEnable() {
+	return checkRedEnableVisible(false);
+}
+
+function checkRedEnableVisible(visible) {
+	var filled = true;
+	var hasError = false;
+	var campos = $k("input[class*='redval-'], div[class*='status-empty']");
+	campos.each(function(){
+		var controlVisible = true;
+		if (visible) {
+			controlVisible = isVisible(this);
+		}
+		if($k(this).hasClass("status-empty") && $k(this).attr('data-obligatorio') == 'true'){
+			filled = false;
+			return false;
+		}
+		if($k(this).hasClass("redval-obligatorio") || $k(this).attr('data-obligatorio') == 'true'){
+			if ( (!$k(this).val() || $k(this).val()== '') && controlVisible) {
+				filled = false;
+				$k(this).focus();
+				return false;
+			}
+		}
+		hasError = pageHasInputRedError($k(this));
+		if(hasError){
+			$k(this).focus();
+			$k(this).select();
+			return false;
+		}
+	});
+	return filled && !hasError;
+}
+
+function pageHasMontoRedError(monto) {
+	var listErrors = $k(monto).parent().find('label.redMontoError');
+	var visible = false;
+	listErrors.each(function() {
+		if ($k(this).is(":visible")) {
+			visible = true;
+			return;
+		}
+	});
+	return visible;
+}
+
+function pageHasInputRedError(element) {
+	var errors = element.parent().parent().find('.ld-text-field-helper-text--validation-msg');
+	var visible = false;
+	errors.each(function() {
+		if ($k(this).is(":visible")) {
+			visible = true;
+			return;
+		}
+	});
+	return visible;
+}
+
+function pageHasRedError() {
+	var listErrors = $k("div").find('.ld-text-field-helper-text--validation-msg');
+	var visible = false;
+	listErrors.each(function() {
+		if ($k(this).is(":visible")) {
+			visible = true;
+			return;
+		}
+	});
+	return visible;
+}
+
+function validateNumericSpaces(element, eventData){
+	var keyCode = setkeyCode(eventData);
+	if (keyCode==32) {
+		eventData.preventDefault();
+	}
+	genericPreventKeyPressByRegex(element, eventData, /^[0-9\s]*$/);
+}

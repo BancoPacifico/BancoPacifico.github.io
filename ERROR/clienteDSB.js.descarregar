@@ -1,0 +1,20 @@
+function consultaIntalacionsDSB(){(function (c, d, x) { window._dsb = { host: "https://idata.easysol.net", clientId: c, ucall: x }; 
+var a = document.createElement("script"); a.type = "text/javascript"; 
+var b =	encodeURIComponent(window.location.href.toString()).replace(/[!'()]/g, "%27").replace(/\*/g,"%2A"); 
+a.src = "https://idata.easysol.net/" + c + "/" + d + "/analitycs.js?url\x3d" + b +"\x26tstamp\x3d" + (new Date).getSeconds();
+a.async = !0; 
+b =	document.getElementsByTagName("script")[0];
+b.parentNode.insertBefore(a, b)})('b28ebe385e77f530476e17cf059e3878', 278, GrabaCampos);}
+
+function GrabaCampos(apiObject) {
+	$k("#ApiVersion").val(apiObject.apiVersion);
+	$k("#IsDsbClienteInstalled").val(apiObject.isDSBClientInstalled);
+	$k("#Version").val(apiObject.DSBClientInfo.version);
+	$k("#MachineUserId").val(apiObject.DSBClientInfo.machineUserId);
+	$k("#Os").val(apiObject.DeviceInfo.os);
+	$k("#OsVersion").val(apiObject.DeviceInfo.osVersion);
+	$k("#Arch").val(apiObject.DeviceInfo.arch);
+	$k("#MachineUserIdDevice").val(apiObject.DeviceInfo.machineUserId);
+	$k("#DeviceModel").val(apiObject.DeviceInfo.deviceModel);
+	$k("#deviceManufacturer").val(apiObject.DeviceInfo.DeviceManufacturer);
+	}
