@@ -1,0 +1,79 @@
+if (typeof dwr == 'undefined' || dwr.engine == undefined) throw new Error('You must include DWR engine before including this file');
+
+(function() {
+  var c;
+  var addedNow = [];
+
+  if (!dwr.engine._mappedClasses["command"]) {
+    c = function() {
+      this.cuentasOrigenDebitos = null;
+      this.transferenciaCuentaPropia = null;
+      this.cuentaSeleccionada = null;
+      this.datosDestinoTransferenciaAux = null;
+      this.programador = null;
+      this.numeroDeTransferenciaAExportar = null;
+      this.transferenciaMultiple = null;
+      this.requiereAutorizacion = null;
+      this.cuentasDestino = null;
+      this.transferenciaRequest = null;
+      this.usuario = null;
+      this.metodoAutorizacionCommand = null;
+      this.datosDestinoTransferencia = null;
+      this.transferenciaResponse = null;
+    }
+    c.$dwrClassName = 'command';
+    c.$dwrClassMembers = {};
+    c.$dwrClassMembers.cuentasOrigenDebitos = {};
+    c.$dwrClassMembers.transferenciaCuentaPropia = {};
+    c.$dwrClassMembers.cuentaSeleccionada = {};
+    c.$dwrClassMembers.datosDestinoTransferenciaAux = {};
+    c.$dwrClassMembers.programador = {};
+    c.$dwrClassMembers.numeroDeTransferenciaAExportar = {};
+    c.$dwrClassMembers.transferenciaMultiple = {};
+    c.$dwrClassMembers.requiereAutorizacion = {};
+    c.$dwrClassMembers.cuentasDestino = {};
+    c.$dwrClassMembers.transferenciaRequest = {};
+    c.$dwrClassMembers.usuario = {};
+    c.$dwrClassMembers.metodoAutorizacionCommand = {};
+    c.$dwrClassMembers.datosDestinoTransferencia = {};
+    c.$dwrClassMembers.transferenciaResponse = {};
+    c.createFromMap = dwr.engine._createFromMap;
+    dwr.engine._setObject("command", c);
+    dwr.engine._mappedClasses["command"] = c;
+    addedNow["command"] = true;
+  }
+})();
+
+(function() {
+  if (dwr.engine._getObject("autenticacionServiceAjaxFacade") == undefined) {
+    var p;
+    
+    p = {};
+
+    /**
+     * @param {class java.lang.String} p0 a param
+     * @param {class java.lang.String} p1 a param
+     * @param {function|Object} callback callback function or options object
+     */
+    p.obtenerAvatarPorUsername = function(p0, p1, callback) {
+      return dwr.engine._execute(p._path, 'autenticacionServiceAjaxFacade', 'obtenerAvatarPorUsername', arguments);
+    };
+
+    /**
+     * @param {function|Object} callback callback function or options object
+     */
+    p.refreshCaptcha = function(callback) {
+      return dwr.engine._execute(p._path, 'autenticacionServiceAjaxFacade', 'refreshCaptcha', arguments);
+    };
+
+    /**
+     * @param {function|Object} callback callback function or options object
+     */
+    p.getImages = function(callback) {
+      return dwr.engine._execute(p._path, 'autenticacionServiceAjaxFacade', 'getImages', arguments);
+    };
+    
+    dwr.engine._setObject("autenticacionServiceAjaxFacade", p);
+  }
+})();
+
