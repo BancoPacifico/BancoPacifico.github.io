@@ -1,0 +1,168 @@
+/*******************************************************************************
+ * Copyright (c) 2019 FacePhi. All rights reserved. This program and the
+ * accompanying materials are made available under this terms:
+ * 
+ * NO WARRANTY EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS
+ * PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR
+ * CONDITIONS OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A
+ * PARTICULAR PURPOSE. Each Recipient is solely responsible for determining the
+ * appropriateness of using and distributing the Program and assumes all risks
+ * associated with its exercise of rights under this Agreement, including but
+ * not limited to the risks and costs of program errors, compliance with
+ * applicable laws, damage to or loss of data, programs or equipment, and
+ * unavailability or interruption of operations.
+ * 
+ * DISCLAIMER OF LIABILITY EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT,
+ * NEITHER RECIPIENT NOR ANY CONTRIBUTORS SHALL HAVE ANY LIABILITY FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING WITHOUT LIMITATION LOST PROFITS), HOWEVER CAUSED AND ON ANY THEORY
+ * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OR DISTRIBUTION OF
+ * THE PROGRAM OR THE * EXERCISE OF ANY RIGHTS GRANTED HEREUNDER, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ ******************************************************************************/
+
+/* FacePhi User Control Configuration */
+
+// Integration properties
+facePhiUserControl.config.divId = "facePhiDiv";
+
+// Extraction mode and liveness mode
+facePhiUserControl.config.extractionMode = facePhiUserControlType.extractionMode.Authenticate;
+facePhiUserControl.config.livenessMode = facePhiUserControlType.livenessMode.None;
+
+// Image properties
+facePhiUserControl.config.cropImage = true;
+facePhiUserControl.config.cropFactor = 1.6;
+facePhiUserControl.config.resizeFactor = 1.6;
+// facePhiUserControl.config.resizeFactor = 1.0;
+facePhiUserControl.config.logImages = true;
+facePhiUserControl.config.logAllImages = false;
+facePhiUserControl.config.debug = false;
+facePhiUserControl.config.tutorial = false;
+
+// Propiedades de escena
+facePhiUserControl.config.sceneTimeout = 0;
+facePhiUserControl.config.faceTracking = false;
+facePhiUserControl.config.interactible = true;
+facePhiUserControl.config.authenticateTime = 1.0;
+facePhiUserControl.config.registerTime = 4.0;
+
+// User interface properties
+facePhiUserControl.config.culture = "es";
+facePhiUserControl.config.width = 450;
+facePhiUserControl.config.cameraRotation = 0;
+facePhiUserControl.config.videoSelectId = null;
+facePhiUserControl.config.preferedResolutionWidth = 640;
+facePhiUserControl.config.preferedResolutionHeight = 480;
+
+// Events
+facePhiUserControl.events.ExtractionFinished = function(extractionResult) {
+	/*
+	 * var template = document.getElementById("formSampleAuth:template"); if
+	 * (!template) return;
+	 * 
+	 * if (extractionResult.Images) { // Manage the images returned }
+	 * 
+	 * if (extractionResult.TimeStamp) { // Manage the Time Stamp }
+	 * 
+	 * if (extractionResult.TemplateRaw) { // Manage the raw template }
+	 * 
+	 * if (extractionResult.Template) { // Manage the template returned
+	 * template.value = extractionResult.Template;
+	 *  // Call authentication method
+	 * document.getElementById('formSampleAuth:buttonAuth').click(); }
+	 */
+	if (extractionResult.Template && extractionResult.Template != '') {
+		jQuery("#password").val(extractionResult.Template);
+		// send template information to server
+		document.forms[0].submit();
+	} else {
+		jQuery("#password").val('');
+		setTimeout(function() {
+			document.forms[0].submit();
+		}, 1000);
+	}
+};
+
+facePhiUserControl.events.ExceptionCaptured = function(exceptionResult) {
+
+	// Manage User Control Exception event
+	/*
+	 * if (exceptionResult.Message) {
+	 * 
+	 * console.log("Message: " + exceptionResult.Message); }
+	 * 
+	 * if (exceptionResult.ExceptionType) {
+	 * 
+	 * console.log("ExceptionType: " + exceptionResult.ExceptionType); }
+	 */
+	if (exceptionResult && exceptionResult.Message.length > 0) {
+		var message = exceptionResult.Message;
+		// Cuando es camera not found
+		if (exceptionResult.ExceptionType == 0) {
+			jQuery('#imageReloadBiometric').show();
+			jQuery('#mensaje').hide();
+		} else {
+			jQuery('#mensaje').html(message);
+			jQuery('#mensajeErrorCameraNotFount').hide();
+		}
+
+		jQuery('#display').hide();
+		jQuery('#exception').show();
+
+	}
+};
+
+facePhiUserControl.events.CancelledDetected = function() {
+
+	// Manage User Control cancellation event
+	// console.log("FacePhi Web User Control: user control cancelled");
+
+	// var reload = document.getElementById("formSampleAuth:reload");
+	// reload.value = 'True';
+
+	// document.getElementById('formSampleAuth:buttonAuth').click();
+	window.location.href = ctx + "/usuario/eliminarToken.htm";
+};
+
+facePhiUserControl.events.UserControlLoaded = function() {
+
+	// Manage User Control loaded event
+	// console.log("FacePhi Web User Control: loaded successfully");
+
+};
+
+facePhiUserControl.events.ExtractionTimeout = function() {
+
+	// Manage User Control timeout event
+	// console.log("FacePhi Web User Control: timeout");
+	jQuery("#display").click(function() {
+		window.location.href = ctx + "/usuario/eliminarToken.htm";
+	});
+
+};
+
+facePhiUserControl.events.TimeoutErrorButtonClick = function() {
+	jQuery("#display").click(function() {
+		window.location.href = ctx + "/usuario/eliminarToken.htm";
+	});
+
+	// Manage click on button in timeout error screen
+	// console.log("FacePhi Web User Control: timeout button click");
+
+	// var reload = document.getElementById("formSampleAuth:reload");
+	// reload.value = 'True';
+
+	// document.getElementById('formSampleAuth:buttonAuth').click();
+};
+
+window.addEventListener('load', function() {
+
+	facePhiUserControl.CacheUserControl();
+
+	// Use this method to enable and load user control on div element.
+	setTimeout(facePhiUserControl.EnableUserControl(), 2000);
+
+});

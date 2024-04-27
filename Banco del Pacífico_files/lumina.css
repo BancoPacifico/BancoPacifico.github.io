@@ -1,0 +1,291 @@
+/* ./your-css-folder/styles.css */
+@tailwind base;
+@tailwind components;
+
+/* inter-regular - latin */
+@font-face {
+  font-family: 'Inter-regular';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./customFonts/fonts/Inter/inter-v3-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('./customFonts/fonts/Inter/inter-v3-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./customFonts/fonts/Inter/inter-v3-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./customFonts/fonts/Inter/inter-v3-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('./customFonts/fonts/Inter/inter-v3-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./customFonts/fonts/Inter/inter-v3-latin-regular.svg#Inter') format('svg'); /* Legacy iOS */
+}
+/* inter-500 - latin */
+@font-face {
+  font-family: 'Inter-medium';
+  font-style: normal;
+  font-weight: 500;
+  src: url('./customFonts/fonts/Inter/inter-v3-latin-500.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('./customFonts/fonts/Inter/inter-v3-latin-500.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./customFonts/fonts/Inter/inter-v3-latin-500.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./customFonts/fonts/Inter/inter-v3-latin-500.woff') format('woff'), /* Modern Browsers */
+       url('./customFonts/fonts/Inter/inter-v3-latin-500.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./customFonts/fonts/Inter/inter-v3-latin-500.svg#Inter') format('svg'); /* Legacy iOS */
+}
+/* inter-700 - latin */
+@font-face {
+  font-family: 'Inter-bold';
+  font-style: normal;
+  font-weight: 700;
+  src: url('./customFonts/fonts/Inter/inter-v3-latin-700.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('./customFonts/fonts/Inter/inter-v3-latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./customFonts/fonts/Inter/inter-v3-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./customFonts/fonts/Inter/inter-v3-latin-700.woff') format('woff'), /* Modern Browsers */
+       url('./customFonts/fonts/Inter/inter-v3-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./customFonts/fonts/Inter/inter-v3-latin-700.svg#Inter') format('svg'); /* Legacy iOS */
+}
+
+@tailwind utilities;
+@tailwind screens;
+
+:root {
+  /* nuevos tokens para assistives */
+  --assistive-success: rgb(20, 136, 52);
+  --assistive-success-default: rgb(232, 243, 235);
+  --assistive-success-inverse: rgb(12, 82, 31);
+
+  --assistive-error: rgb(205, 32, 41);
+  --assistive-error-default: rgb(250, 234, 235);
+  --assistive-error-inverse: rgb(95, 14, 20);
+
+  --assistive-warning: rgb(255, 204, 0);
+  --assistive-warning-default: rgb(255, 248, 222);
+  --assistive-warning-inverse: rgb(122, 97, 0);
+
+  --assistive-focused: rgb(0, 94, 184);
+  --assistive-focused-default: rgb(230, 239, 248);
+  --assistive-focused-inverse: rgb(0, 42, 102);
+
+  --success: rgb(20, 136, 52);
+  --success-light: rgb(232, 243, 235);
+  --success-dark: rgb(12, 82, 31);
+
+  --warning: rgb(255, 204, 0);
+  --warning-light: rgb(255, 248, 222);
+  --warning-dark: rgb(122, 97, 0);
+
+  --error: rgb(205, 32, 41);
+  --error-light: rgb(250, 234, 235);
+  --error-dark: rgb(95, 14, 20);
+
+  --focused: rgb(0, 94, 184);
+  --focused-light: rgb(230, 239, 248);
+  --focused-dark: rgb(0, 42, 102);
+  
+  --default: rgb(253, 253, 253);
+  --default-inverse: rgb(25, 28, 30);
+  --default-inverse-variant: rgb(99, 109, 119);
+
+  --disabled: rgb(219, 224, 228);
+  --disabled-darker: rgb(179, 186, 192);
+
+  --primary: rgb(0, 94, 184);
+  --primary-200: rgb(0, 84, 165);
+  --primary-50: rgb(79, 144, 206);
+  --primary-40: rgb(129, 176, 220);
+  --primary-30: rgb(168, 200, 230);
+  --primary-20: rgb(201, 221, 240);
+  --primary-10: rgb(229, 239, 247);
+
+  --primary-dark: rgb(0, 42, 102);
+  --primary-dark-50: rgb(95, 121, 159);
+  --primary-dark-40: rgb(142, 161, 187);
+  --primary-dark-30: rgb(178, 190, 208);
+  --primary-dark-20: rgb(207, 215, 226);
+  --primary-dark-10: rgb(232, 236, 241);
+
+  --tertiary: rgb(249, 233, 78);
+  --tertiary-50: rgb(250, 236, 114);
+  --tertiary-40: rgb(251, 241, 147);
+  --tertiary-30: rgb(252, 244, 177);
+  --tertiary-20: rgb(253, 248, 205);
+  --tertiary-10: rgb(254, 251, 230);
+
+  --tertiary-variant: rgb(128, 74, 139);
+  --tertiary-variant-50: rgb(191, 164, 197);
+  --tertiary-variant-40: rgb(204, 183, 209);
+  --tertiary-variant-30: rgb(216, 200, 220);
+  --tertiary-variant-20: rgb(230, 219, 232);
+  --tertiary-variant-10: rgb(242, 236, 243);
+
+  --graph-color-1: rgb(0, 0, 0);
+  --graph-color-2: rgb(255, 255, 255);
+  --graph-color-3: rgb(219, 224, 228);
+  --graph-color-4: rgb(249, 233, 78);
+  --graph-color-5: rgb(139, 147, 155);
+  --graph-color-6: rgb(50, 55, 60);
+
+  --secondary: rgb(236, 239, 241);
+  --secondary-variant: rgb(245, 246, 247);
+  --secondary-variant-1: rgb(30, 215, 95);
+  --secondary-variant-1-50: rgb(143, 235, 175);
+  --secondary-variant-1-40: rgb(165, 239, 191);
+  --secondary-variant-1-30: rgb(170, 239, 194);
+  --secondary-variant-1-20: rgb(201, 245, 217);
+  --secondary-variant-1-10: rgb(229, 250, 237);
+  
+  --secondary-variant-2: rgb(0, 204, 255);
+  --secondary-variant-2-50: rgb(128, 230, 255);
+  --secondary-variant-2-40: rgb(153, 235, 255);
+  --secondary-variant-2-30: rgb(179, 240, 255);
+  --secondary-variant-2-20: rgb(197, 243, 255);
+  --secondary-variant-2-10: rgb(227, 249, 255);
+
+  --secondary-variant-3: rgb(255, 54, 93);
+  --secondary-variant-3-50: rgb(255, 155, 174);
+  --secondary-variant-3-40: rgb(255, 175, 190);
+  --secondary-variant-3-30: rgb(255, 195, 206);
+  --secondary-variant-3-20: rgb(255, 215, 223);
+  --secondary-variant-3-10: rgb(255, 235, 239);
+
+  --divider-dark: rgb(179, 186, 192);
+  --divider-light: rgb(219, 224, 228);
+
+  --header: rgb(0, 94, 184);
+
+  --list-border-outline-state-disabled: rgb(219, 224, 228);
+  --list-border-outline-state-resting: rgb(179, 186, 192);
+  --list-border-outline-state-selected: rgb(179, 186, 192);
+
+  --list-border-template-selected: rgb(179, 186, 192);
+  --list-border-template-resting: rgb(179, 186, 192);
+  --list-border-template-disabled: rgb(219, 224, 228);
+
+  --list-border-views-tables: rgb(219, 224, 228);
+
+  --button-border-hover: rgb(0, 94, 184);
+  --button-border-normal: rgb(179, 186, 192);
+  --button-border-activated: rgb(0, 94, 184);
+  --button-border-disabled: rgb(219, 224, 228);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+      /* nuevos tokens para assistives */
+    --assistive-success: rgb(232, 249, 237);
+    --assistive-success-default: rgb(6, 40, 15);
+    --assistive-success-inverse: rgb(30, 203, 78) ;
+
+    --assistive-error: rgb(252, 238, 238);
+    --assistive-error-default: rgb(45, 17, 18);
+    --assistive-error-inverse: rgb(225, 121, 126);
+
+    --assistive-warning: rgb(255, 251, 237);
+    --assistive-warning-default: rgb(51, 43, 15);
+    --assistive-warning-inverse: rgb(255, 219, 77);
+
+    --assistive-focused: rgb(81, 170, 255) ;
+    --assistive-focused-default: rgb(0, 42, 102) ;
+    --assistive-focused-inverse: rgb(237, 246, 255);
+
+    --success: rgb(30, 203, 78);
+    --success-dark: rgb(27, 182, 70);
+    --success-light: rgb(232, 249, 237);
+
+    --focused: rgb(81, 170, 255);
+    --focused-dark: rgb(16, 34, 51);
+    --focused-light: rgb(237, 246, 255);
+
+    --error: rgb(225, 121, 126);
+    --error-dark: rgb(45, 17, 18);
+    --error-light: rgb(252, 238, 238);
+
+    --warning: rgb(255, 219, 77);
+    --warning-dark: rgb(51, 43, 15);
+    --warning-light: rgb(255, 251, 237);
+
+    --primary: rgb(81, 170, 255);
+    --primary-200: rgb(72, 153, 229);
+    --primary-50: rgb(168, 212, 255);
+    --primary-40: rgb(185, 221, 255);
+    --primary-30: rgb(202, 229, 255);
+    --primary-20: rgb(220, 238, 255);
+    --primary-10: rgb(237, 246, 255);
+
+    --primary-dark: rgb(51, 136, 255);
+    --primary-dark-50: rgb(153, 195, 255);
+    --primary-dark-40: rgb(173, 207, 255);
+    --primary-dark-30: rgb(193, 219, 255);
+    --primary-dark-20: rgb(214, 231, 255);
+    --primary-dark-10: rgb(234, 243, 255);
+
+    --graph-color-1: rgb(13, 14, 15);
+    --graph-color-2: rgb(209, 210, 210);
+    --graph-color-3: rgb(37, 40, 42);
+    --graph-color-4: rgb(232, 232, 233);
+    --graph-color-5: rgb(71, 73, 75);
+    --graph-color-6: rgb(37, 40, 42);
+
+    --tertiary-variant: rgb(167, 111, 178);
+    --tertiary-variant-30: rgb(228, 211, 231);
+    --tertiary-variant-20: rgb(237, 226, 239);
+    --tertiary-variant-10: rgb(246, 240, 247);
+
+    --header: rgb(48, 51, 53);
+
+    --default: rgb(25, 28, 30);
+    --default-inverse: rgb(253, 253, 253);
+    --default-inverse-variant: rgb(186, 187, 188);
+
+    --disabled: rgb(140, 142, 143);
+    --disabled-darker: rgb(94, 96, 98);
+
+    --divider-dark: rgb(94, 96, 98);
+    --divider-light: rgb(140, 142, 143);
+
+    --button-border-disabled: rgb(140, 142, 143);
+    --button-border-activated: rgb(81, 170, 255);
+    --button-border-normal: rgb(232, 232, 233);
+    --button-border-hover: rgb(81, 170, 255);
+
+    --list-border-template-resting: rgb(94, 96, 98);
+    --list-border-outline-state-selected: rgb(94, 96, 98);
+    --list-border-outline-state-disabled: rgb(140, 142, 143);
+    --list-border-outline-state-resting: rgb(94, 96, 98);
+    --list-border-views-tables: rgb(140, 142, 143);
+
+    --tertiary: rgb(252, 242, 152);
+    --tertiary-50: rgb(253, 248, 203);
+    --tertiary-40: rgb(253, 249, 213);
+    --tertiary-30: rgb(254, 251, 224);
+    --tertiary-20: rgb(254, 252, 234);
+    --tertiary-10: rgb(254, 253, 244);
+    
+    --tertiary-variant-50: rgb(211, 183, 216);
+    --tertiary-variant-40: rgb(219, 197, 224);
+
+    --secondary: rgb(48, 51, 53);
+    --secondary-variant: rgb(245, 246, 247);
+
+    --secondary-variant-1: rgb(90, 232, 140);
+    --secondary-variant-2: rgb(77, 219, 255);
+    --secondary-variant-3: rgb(255, 131, 155);
+    --secondary-variant-3-50: rgb(255, 193, 205);
+
+    --secondary-variant-2-50: rgb(166, 237, 255);
+    --secondary-variant-3-40: rgb(255, 205, 215);
+    --secondary-variant-1-50: rgb(172, 243, 197);
+    --secondary-variant-2-40: rgb(183, 240, 255);
+    --secondary-variant-3-30: rgb(255, 217, 225);
+    --secondary-variant-1-40: rgb(165, 239, 191);
+    --secondary-variant-2-30: rgb(201, 244, 255);
+    --secondary-variant-3-20: rgb(255, 230, 235);
+    --secondary-variant-1-30: rgb(170, 239, 194);
+    --secondary-variant-2-20: rgb(219, 247, 255);
+    --secondary-variant-3-10: rgb(255, 242, 245);
+    --secondary-variant-1-20: rgb(201, 245, 217);
+    --secondary-variant-2-10: rgb(237, 251, 255);
+    --secondary-variant-1-10: rgb(229, 250, 237);
+
+    --list-border-template-selected: #5e6062;
+    --list-border-template-disabled: #8c8e8f;
+
+  }
+}

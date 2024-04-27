@@ -1,0 +1,215 @@
+#lumina .ld-w-img{
+    width: 25px;
+}
+@media only screen and (max-width: 550px) {
+    #lumina [class*='btn-'].css-redonlybtn {
+        width: 100%;
+        max-width: none;
+    }
+}
+.css-simple-capitalize{
+    text-transform: capitalize;
+}
+.ld-input-box.ld-input-box--invalid {
+    border-bottom: 1px solid var(--error) !important;
+}
+.ld-input-box .ld-input:focus {
+    box-shadow: none;
+}
+#lumina .ld-input-box .ld-input {
+    font-size: 100% !important;
+    background-color: #FFF !important;
+}
+#lumina .ld-input-box .ld-input.ld-otp {
+    font-size: 1.438rem !important;
+    width: 2rem;
+    height: 54px !important;
+}
+#lumina .ld-input-box:has(.ld-input.ld-otp) {
+    height: 55px !important;
+}
+.ld-text-field-helper-text {
+    height: auto !important;
+}
+.ld-input::placeholder{
+    color: #FFF !important;
+}
+.ld-input:read-only{
+    color: var(--default-inverse-variant) !important;
+}
+.ld-input-main input{
+    font-size: 1.063rem !important;
+}
+.item-Detalle {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.item-Cabecera:hover{
+    background-color: var(--secondary);
+}
+.item-Cabecera{
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    border: 0;
+    background-color: white;
+    color: black;
+}
+.item-Body{
+    display: flex;
+    padding: 1rem;
+    cursor: pointer;
+}
+.item-Line{
+    width: initial;
+    border-bottom: 1px solid var(--divider-light);
+    position: relative;
+}
+.ld-btn-outline.selected{
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+    border-width: 2px;
+}
+.redMonto input.MontoRediseno {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    background-color: #FFF !important;
+}
+.redMonto input.MontoEnteroRediseno {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    background-color: #FFF !important;
+}
+
+.redMonto .error-message {
+    position: relative;
+    top: 0;
+}
+.redMonto input:focus {
+    box-shadow: none !important;
+}
+.redMonto input::placeholder {
+    color: var(--default-inverse-variant) !important;
+    font-family: Inter-bold !important;
+    font-size: 1.938rem !important;
+}
+.redMonto .line{
+    max-width: 20rem;
+    width: 100%;
+    border-bottom: 2px solid var(--primary);
+}
+#lumina .redDinamicRow .redCol-2{
+    width: 50%;
+}
+@media only screen and (max-width: 600px){
+    #lumina .redDinamicRow {
+        flex-direction: column;
+    }
+    #lumina .redDinamicRow .redCol-2{
+        width: 100%;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+}
+.boton-show-simple{
+    border: 1px solid var(--divider-dark);
+    border-radius: 7px;
+}
+.boton-show-simple:hover{
+    border-color: var(--primary);
+}
+#lumina .boton-show-simple:hover span{
+    color: var(--primary);
+}
+.list-show-simple{
+    border: 1px solid var(--disabled-darker);
+    border-radius: 7px;
+}
+.list-item-show-simple *{
+    font-family:'Inter-regular' !important;
+}
+#lumina .list-item-show-simple:hover .item-show-simple{
+    color: var(--primary);
+}
+.list-item-show-simple img.cardIcon{
+    width: 16px;
+    content: url(../images/Lumina/disabled/chevron_right.svg);
+}
+.list-item-show-simple:hover img.cardIcon{
+    width: 16px;
+    content: url(../images/Lumina/principal/chevron_right.svg);
+}
+.line-show-simple{
+    width: initial;
+    border-bottom: 1px solid var(--disabled-darker);
+    position: relative;
+}
+.list-show-simple:hover{
+    border-color: var(--primary);
+}
+.list-show-simple:hover .line-show-simple{
+    border-bottom: 1px solid var(--primary);
+}
+#centrecontent:has(form.genMsjContratoRechazado), #centrecontent:has(form.genMsjTienesCuentaAhorro),
+#centrecontent:has(form.genMsjSolicitaTarjetaDif), #centrecontent:has(form[class*='genMsjPrestamo']) {
+    max-width: 20.5rem;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+}
+.list-boton-simple {
+    border-radius: 7px;
+}
+.list-boton-simple:hover {
+    border-color: var(--primary) !important;
+}
+.list-boton-simple .boton-pick-simple {
+    border: none;
+}
+.list-boton-simple:hover .line-boton-simple{
+    border-bottom-color: var(--primary) !important;
+}
+.list-boton-simple .ld-text-field-helper-line {
+    margin-top: -12px;
+}
+@media only screen and (max-width: 900px) {
+    #outer:has(form[class*='sinLogin']){
+        margin-top: 66px !important;
+    }
+}
+@media only screen and (min-width: 900px){
+    body:has(form[class*='sinLogin']) .popUpRedInfoClass.ui-widget-content{
+        position: fixed;
+        left: 50% !important;
+    }
+}
+@media only screen and (max-width: 1000px) {
+    #outer:has(form[class*='sinLogin']){
+        padding-bottom: 60px;
+    }
+}
+#centrecontent:has(form.sinLoginContratoRechazado), #centrecontent:has(form.sinLoginACMsjContrato){
+    max-width: 20.5rem;
+}
+#centrecontent:has(form[class*='sinLogin']){
+    min-height: 0;
+    width: auto;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+}
+#outer:has(form[class*='sinLogin']){
+    max-width: none;
+}
+#outer:has(form[class*='sinLogin']) .contenedor-panel-derecho {
+    height: 20px;
+}
+form[class*='sinLogin'] #lumina button{
+    margin-bottom: 0 !important;
+}
+form.genMsjPrestamoPreAprobado .producto-imagen {
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
